@@ -9,13 +9,13 @@ Online marketplace for premium RCC (Reinforced Cement Concrete) products and con
 - **Other RCC Products** - Custom solutions available
 
 ## Features
-✅ Product catalog with specifications & pricing
-✅ Product gallery with high-quality images
-✅ Shopping cart & secure checkout
-✅ Order management & tracking
-✅ WhatsApp integration for quick inquiries
-✅ Responsive mobile design
-✅ Process & quality information pages
+- Product catalog with specifications & pricing
+- Product gallery with high-quality images
+- Shopping cart & secure checkout
+- Order management & tracking
+- WhatsApp integration for quick inquiries
+- Responsive mobile design
+- Process & quality information pages
 
 ## Company Info
 📍 **Location:** Patiala, Punjab, India
