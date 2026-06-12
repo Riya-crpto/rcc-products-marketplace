@@ -688,6 +688,17 @@ footer { background: var(--dark-footer); color: rgba(255,255,255,0.55); padding:
     color:#555;
 }
 
+.wall-designs-compact{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+    gap:16px;
+    margin-top:28px;
+}
+.wall-designs-compact .wall-card img{height:150px;}
+.wall-designs-compact .wall-card h4{font-size:15px;padding:10px 14px 4px;}
+.wall-designs-compact .wall-card ul{padding:0 14px 12px;font-size:12px;}
+.wall-designs-compact .wall-card li{margin-bottom:4px;}
+
 /* ═══════════════════════════════════════
    PROFESSIONAL PRODUCT SHOWCASE CARDS
    (View Details overlay — sales layout)
