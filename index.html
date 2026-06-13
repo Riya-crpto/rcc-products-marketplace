@@ -22,6 +22,108 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<img src="images/products/planter/planter2.jpeg" alt="Tree guard small">
+<!-- ...existing code... -->
+<img src="images/products/planter/planter2.jpeg" onclick="switchProdImg(this,'images/products/planter/planter2.jpeg')" alt="Small">
+<!-- ...existing code... -->
+<script src="js/main.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('error', function () {
+      if (this.dataset.imageFallback) return;
+      this.dataset.imageFallback = '1';
+      const src = this.getAttribute('src') || '';
+      const fallbackRules = [
+        [/palnter2\.jpeg$/i, 'planter2.jpeg'],
+        [/palnter2\.jpg$/i, 'planter2.jpg'],
+        [/copping/gi, 'coping'],
+        [/coping/gi, 'copping'],
+        [/\.jpeg$/i, '.jpg'],
+        [/\.jpg$/i, '.jpeg']
+      ];
+      for (const [pattern, replacement] of fallbackRules) {
+        const next = src.replace(pattern, replacement);
+        if (next !== src) {
+          this.src = next;
+          return;
+        }
+      }
+      this.src = 'data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240"><rect width="100%" height="100%" fill="%23f8f8f8"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23999" font-family="Arial, sans-serif" font-size="16">Image not available</text></svg>';
+    });
+  });
+});
+</script>
+</body>
+</html><!-- ...existing code... -->
+<img src="images/products/planter/planter2.jpeg" alt="Tree guard small">
+<!-- ...existing code... -->
+<img src="images/products/planter/planter2.jpeg" onclick="switchProdImg(this,'images/products/planter/planter2.jpeg')" alt="Small">
+<!-- ...existing code... -->
+<script src="js/main.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('error', function () {
+      if (this.dataset.imageFallback) return;
+      this.dataset.imageFallback = '1';
+      const src = this.getAttribute('src') || '';
+      const fallbackRules = [
+        [/palnter2\.jpeg$/i, 'planter2.jpeg'],
+        [/palnter2\.jpg$/i, 'planter2.jpg'],
+        [/copping/gi, 'coping'],
+        [/coping/gi, 'copping'],
+        [/\.jpeg$/i, '.jpg'],
+        [/\.jpg$/i, '.jpeg']
+      ];
+      for (const [pattern, replacement] of fallbackRules) {
+        const next = src.replace(pattern, replacement);
+        if (next !== src) {
+          this.src = next;
+          return;
+        }
+      }
+      this.src = 'data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240"><rect width="100%" height="100%" fill="%23f8f8f8"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23999" font-family="Arial, sans-serif" font-size="16">Image not available</text></svg>';
+    });
+  });
+});
+</script>
+</body>
+</html><!-- ...existing code... -->
+<img src="images/products/planter/planter2.jpeg" alt="Tree guard small">
+<!-- ...existing code... -->
+<img src="images/products/planter/planter2.jpeg" onclick="switchProdImg(this,'images/products/planter/planter2.jpeg')" alt="Small">
+<!-- ...existing code... -->
+<script src="js/main.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('error', function () {
+      if (this.dataset.imageFallback) return;
+      this.dataset.imageFallback = '1';
+      const src = this.getAttribute('src') || '';
+      const fallbackRules = [
+        [/palnter2\.jpeg$/i, 'planter2.jpeg'],
+        [/palnter2\.jpg$/i, 'planter2.jpg'],
+        [/copping/gi, 'coping'],
+        [/coping/gi, 'copping'],
+        [/\.jpeg$/i, '.jpg'],
+        [/\.jpg$/i, '.jpeg']
+      ];
+      for (const [pattern, replacement] of fallbackRules) {
+        const next = src.replace(pattern, replacement);
+        if (next !== src) {
+          this.src = next;
+          return;
+        }
+      }
+      this.src = 'data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240"><rect width="100%" height="100%" fill="%23f8f8f8"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23999" font-family="Arial, sans-serif" font-size="16">Image not available</text></svg>';
+    });
+  });
+});
+</script>
+</body>
+</html>ss/style.css">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%231e2d45'/><text y='.85em' font-size='58' font-family='serif' font-weight='900' fill='%23c9a84c' x='8'>AP</text></svg>">
 </head>
 <body>
@@ -599,7 +701,7 @@
       </div>
       <div class="wall-designs wall-designs-compact reveal">
         <div class="wall-card reveal" onclick="enquireProduct('RCC Compound Wall - Multicolour Diamond Jali Wall','Design 01: Plank 2100 x 300 x 50 mm')">
-          <img src="images/products/walls/pdf-catalogue/wall-photo-01.png" alt="RCC Compound Wall - Multicolour Diamond Jali Wall">
+          <img src="images/products/walls/wall1.png" alt="RCC Compound Wall - Multicolour Diamond Jali Wall">
           <h4>RCC Multicolour Diamond Jali Wall</h4>
           <ul>
             <li><strong>Type:</strong> Compound Wall</li>
@@ -607,7 +709,7 @@
           </ul>
         </div>
         <div class="wall-card reveal" onclick="enquireProduct('RCC Boundary Wall - Scalloped Floral Brick Finish','Design 02: Plank 1800 x 300 x 50 mm')">
-          <img src="images/products/walls/pdf-catalogue/wall-photo-02.png" alt="RCC Boundary Wall - Scalloped Floral Brick Finish">
+          <img src="images/products/walls/wall2.png" alt="RCC Boundary Wall - Scalloped Floral Brick Finish">
           <h4>RCC Scalloped Floral Brick Finish</h4>
           <ul>
             <li><strong>Type:</strong> Boundary Wall</li>
@@ -615,7 +717,7 @@
           </ul>
         </div>
         <div class="wall-card reveal" onclick="enquireProduct('RCC Compound Wall - Blue & White Brick Lattice Top','Design 03: Plank 1800 x 300 x 50 mm')">
-          <img src="images/products/walls/pdf-catalogue/wall-photo-03.png" alt="RCC Compound Wall - Blue & White Brick Lattice Top">
+          <img src="images/products/walls/wall3.png" alt="RCC Compound Wall - Blue & White Brick Lattice Top">
           <h4>RCC Blue & White Brick Lattice Top</h4>
           <ul>
             <li><strong>Type:</strong> Compound Wall</li>
@@ -623,7 +725,7 @@
           </ul>
         </div>
         <div class="wall-card reveal" onclick="enquireProduct('RCC Boundary Wall - Beige Brick Diamond Jali Cap','Design 04: Plank 1800 x 300 x 50 mm')">
-          <img src="images/products/walls/pdf-catalogue/wall-photo-04.png" alt="RCC Boundary Wall - Beige Brick Diamond Jali Cap">
+          <img src="images/products/walls/wall4.png" alt="RCC Boundary Wall - Beige Brick Diamond Jali Cap">
           <h4>RCC Beige Brick Diamond Jali Cap</h4>
           <ul>
             <li><strong>Type:</strong> Boundary Wall</li>
@@ -631,7 +733,7 @@
           </ul>
         </div>
         <div class="wall-card reveal" onclick="enquireProduct('RCC Compound Wall - Grey Floral Scroll Brick Texture','Design 05: Plank 1800 x 300 x 50 mm')">
-          <img src="images/products/walls/pdf-catalogue/wall-photo-05.png" alt="RCC Compound Wall - Grey Floral Scroll Brick Texture">
+          <img src="images/products/walls/wall5.png" alt="RCC Compound Wall - Grey Floral Scroll Brick Texture">
           <h4>RCC Grey Floral Scroll Brick Texture</h4>
           <ul>
             <li><strong>Type:</strong> Compound Wall</li>
@@ -639,7 +741,7 @@
           </ul>
         </div>
         <div class="wall-card reveal" onclick="enquireProduct('RCC Compound Wall - Plain Grey with Concertina Wire','Design 06: Plank 2100 x 300 x 50 mm')">
-          <img src="images/products/walls/pdf-catalogue/wall-photo-06.png" alt="RCC Compound Wall - Plain Grey with Concertina Wire">
+          <img src="images/products/walls/wall-premium-design.png" alt="RCC Compound Wall - Plain Grey with Concertina Wire">
           <h4>RCC Plain Grey with Concertina Wire</h4>
           <ul>
             <li><strong>Type:</strong> Compound Wall</li>
@@ -647,7 +749,7 @@
           </ul>
         </div>
         <div class="wall-card reveal" onclick="enquireProduct('RCC Boundary Wall - Terracotta Diamond Jali','Design 07: Plank 1800 x 300 x 50 mm')">
-          <img src="images/products/walls/pdf-catalogue/wall-photo-07.png" alt="RCC Boundary Wall - Terracotta Diamond Jali">
+          <img src="images/products/walls/wall-jali-panels.png" alt="RCC Boundary Wall - Terracotta Diamond Jali">
           <h4>RCC Terracotta Diamond Jali</h4>
           <ul>
             <li><strong>Type:</strong> Boundary Wall</li>
@@ -655,7 +757,7 @@
           </ul>
         </div>
         <div class="wall-card reveal" onclick="enquireProduct('RCC Compound Wall - Plain Grey 5-Panel Standard','Design 08: Plank 2100 x 300 x 50 mm')">
-          <img src="images/products/walls/pdf-catalogue/wall-photo-08.png" alt="RCC Compound Wall - Plain Grey 5-Panel Standard">
+          <img src="images/products/walls/wall-security-barbed.png" alt="RCC Compound Wall - Plain Grey 5-Panel Standard">
           <h4>RCC Plain Grey 5-Panel Standard</h4>
           <ul>
             <li><strong>Type:</strong> Compound Wall</li>
@@ -663,7 +765,7 @@
           </ul>
         </div>
         <div class="wall-card reveal" onclick="enquireProduct('RCC Compound Wall - Plain Grey Economy Style','Design 09: Plank 2100 x 300 x 50 mm')">
-          <img src="images/products/walls/pdf-catalogue/wall-photo-09.png" alt="RCC Compound Wall - Plain Grey Economy Style">
+          <img src="images/products/walls/wall6.png" alt="RCC Compound Wall - Plain Grey Economy Style">
           <h4>RCC Plain Grey Economy Style</h4>
           <ul>
             <li><strong>Type:</strong> Compound Wall</li>
@@ -671,7 +773,7 @@
           </ul>
         </div>
         <div class="wall-card reveal" onclick="enquireProduct('RCC Compound Wall - Grey Floral Top Brick Texture','Design 10: Plank 2100 x 300 x 50 mm')">
-          <img src="images/products/walls/pdf-catalogue/wall-photo-10.png" alt="RCC Compound Wall - Grey Floral Top Brick Texture">
+          <img src="images/products/walls/wall1.png" alt="RCC Compound Wall - Grey Floral Top Brick Texture">
           <h4>RCC Grey Floral Top Brick Texture</h4>
           <ul>
             <li><strong>Type:</strong> Compound Wall</li>
@@ -679,7 +781,7 @@
           </ul>
         </div>
         <div class="wall-card reveal" onclick="enquireProduct('RCC Compound Wall - Grey Scalloped Top Brick Design','Design 11: Plank 2100 x 300 x 50 mm')">
-          <img src="images/products/walls/pdf-catalogue/wall-photo-11.png" alt="RCC Compound Wall - Grey Scalloped Top Brick Design">
+          <img src="images/products/walls/wall2.png" alt="RCC Compound Wall - Grey Scalloped Top Brick Design">
           <h4>RCC Grey Scalloped Top Brick Design</h4>
           <ul>
             <li><strong>Type:</strong> Compound Wall</li>
@@ -687,7 +789,7 @@
           </ul>
         </div>
         <div class="wall-card reveal" onclick="enquireProduct('RCC Compound Wall - Red & White Painted Design','Design 12: Plank 2100 x 300 x 50 mm')">
-          <img src="images/products/walls/pdf-catalogue/wall-photo-12.png" alt="RCC Compound Wall - Red & White Painted Design">
+          <img src="images/products/walls/wall3.png" alt="RCC Compound Wall - Red & White Painted Design">
           <h4>RCC Red & White Painted Design</h4>
           <ul>
             <li><strong>Type:</strong> Compound Wall</li>
@@ -695,7 +797,7 @@
           </ul>
         </div>
         <div class="wall-card reveal" onclick="enquireProduct('RCC Boundary Wall - Grey Brick Texture Standard','Design 13: Plank 1800 x 300 x 50 mm')">
-          <img src="images/products/walls/pdf-catalogue/wall-photo-13.png" alt="RCC Boundary Wall - Grey Brick Texture Standard">
+          <img src="images/products/walls/wall4.png" alt="RCC Boundary Wall - Grey Brick Texture Standard">
           <h4>RCC Grey Brick Texture Standard</h4>
           <ul>
             <li><strong>Type:</strong> Boundary Wall</li>
@@ -703,7 +805,7 @@
           </ul>
         </div>
         <div class="wall-card reveal" onclick="enquireProduct('RCC Compound Wall - White Lattice Top Design','Design 14: Plank 2100 x 300 x 50 mm')">
-          <img src="images/products/walls/pdf-catalogue/wall-photo-14.png" alt="RCC Compound Wall - White Lattice Top Design">
+          <img src="images/products/walls/wall5.png" alt="RCC Compound Wall - White Lattice Top Design">
           <h4>RCC White Lattice Top Design</h4>
           <ul>
             <li><strong>Type:</strong> Compound Wall</li>
@@ -711,7 +813,7 @@
           </ul>
         </div>
         <div class="wall-card reveal" onclick="enquireProduct('RCC Compound Wall - Green & White Scalloped Top','Design 15: Plank 2100 x 300 x 50 mm')">
-          <img src="images/products/walls/pdf-catalogue/wall-photo-15.png" alt="RCC Compound Wall - Green & White Scalloped Top">
+          <img src="images/products/walls/wall6.png" alt="RCC Compound Wall - Green & White Scalloped Top">
           <h4>RCC Green & White Scalloped Top</h4>
           <ul>
             <li><strong>Type:</strong> Compound Wall</li>
@@ -990,7 +1092,7 @@
           <img class="prod-sale-main" src="images/products/poles/pole1.jpeg" alt="RCC Fence Poles">
           <div class="prod-sale-thumbs">
             <img src="images/products/poles/pole1.jpeg" class="active" onclick="switchProdImg(this,'images/products/poles/pole1.jpeg')" alt="Pole 1">
-            <img src="images/products/poles/rcc-fence-pole-stack.png" onclick="switchProdImg(this,'images/products/poles/rcc-fence-pole-stack.png')" alt="RCC Fence Pole Stack">
+            <img src="images/products/poles/pole5.jpeg" onclick="switchProdImg(this,'images/products/poles/pole5.jpeg')" alt="Pole 5">
             <img src="images/products/poles/pole2.jpeg" onclick="switchProdImg(this,'images/products/poles/pole2.jpeg')" alt="Pole 2">
             <img src="images/products/poles/pole3.jpeg" onclick="switchProdImg(this,'images/products/poles/pole3.jpeg')" alt="Pole 3">
             <img src="images/products/poles/pole4.jpeg" onclick="switchProdImg(this,'images/products/poles/pole4.jpeg')" alt="Pole 4">
@@ -1192,19 +1294,19 @@
       </div>
       <div class="ps-grid ps-grid-3 reveal" style="margin-bottom:50px;">
         <div class="ps-card" onclick="enquireProduct('RCC Fence Pole Large','2100 x 100 x 100 mm')">
-          <div class="ps-card-img"><img src="images/products/poles/rcc-fence-pole-stack.png" alt="RCC Fence Pole Stack"></div>
+          <div class="ps-card-img"><img src="images/products/poles/pole2.jpeg" alt="RCC Fence Pole Stack"></div>
           <div class="ps-card-body"><span class="ps-cat">Structural</span><h3>RCC Fence Pole (Large)</h3><p>2100 × 100 × 100 mm</p></div>
         </div>
         <div class="ps-card" onclick="enquireProduct('RCC Chamber and Cover Square','600 x 600 x 1800 mm')">
-          <div class="ps-card-img"><img src="images/products/misc/rcc-chamber-cover-square.png" alt="RCC Chamber Cover Square"></div>
+          <div class="ps-card-img"><img src="images/products/benches/bench1.jpeg" alt="RCC Chamber Cover Square"></div>
           <div class="ps-card-body"><span class="ps-cat">Utility</span><h3>RCC Chamber &amp; Cover Square</h3><p>600 × 600 × 1800 mm</p></div>
         </div>
         <div class="ps-card" onclick="enquireProduct('RCC Coping Stone','Wall cap / coping stone')">
-          <div class="ps-card-img"><img src="images/products/misc/rcc-coping-stone-wall-cap.png" alt="RCC Coping Stone Wall Cap"></div>
+          <div class="ps-card-img"><img src="images/products/benches/bench2.jpeg" alt="RCC Coping Stone Wall Cap"></div>
           <div class="ps-card-body"><span class="ps-cat">Finishing</span><h3>RCC Coping Stone (Wall Cap)</h3><p>Chamfered top for water runoff</p></div>
         </div>
         <div class="ps-card" onclick="enquireProduct('RCC Railway Copping','900 x 600 x 100 mm')">
-          <div class="ps-card-img"><img src="images/products/misc/rcc-railway-copping-platform.png" alt="RCC Railway Copping Platform"></div>
+          <div class="ps-card-img"><img src="images/products/benches/bench3.jpeg" alt="RCC Railway Copping Platform"></div>
           <div class="ps-card-body"><span class="ps-cat">Railway</span><h3>RCC Railway Copping</h3><p>900 × 600 × 100 mm</p></div>
         </div>
         <div class="ps-card" onclick="enquireProduct('RCC Boundary Wall Vertical Slat','Precast roadside railing')">
@@ -1231,7 +1333,7 @@
         <div class="ps-card" onclick="enquireProduct('RCC Blue White Pattern Wall')"><div class="ps-card-img"><img src="images/products/walls/rcc-blue-white-pattern-boundary.png" alt="Blue White Pattern Wall"></div><div class="ps-card-body"><span class="ps-cat">Boundary Wall</span><h3>Blue &amp; White Pattern Wall</h3><p>1800 × 300 × 50 mm</p></div></div>
         <div class="ps-card" onclick="enquireProduct('RCC Blue White Slat Wall')"><div class="ps-card-img"><img src="images/products/walls/rcc-blue-white-slat-painting.png" alt="Blue White Slat Wall"></div><div class="ps-card-body"><span class="ps-cat">Boundary Wall</span><h3>Blue &amp; White Slat Wall</h3><p>1800 × 300 × 50 mm</p></div></div>
         <div class="ps-card" onclick="enquireProduct('RCC Vertical Slat Roadside Railing')"><div class="ps-card-img"><img src="images/products/walls/rcc-vertical-slat-curved-roadside.png" alt="Vertical Slat Roadside Railing"></div><div class="ps-card-body"><span class="ps-cat">Boundary Wall</span><h3>Vertical Slat Roadside Railing</h3><p>1800 × 300 × 50 mm</p></div></div>
-        <div class="ps-card" onclick="enquireProduct('RCC Railway Platform Slab')"><div class="ps-card-img"><img src="images/products/misc/rcc-railway-platform-slab-sippo.png" alt="RCC Railway Platform Slab"></div><div class="ps-card-body"><span class="ps-cat">Railway</span><h3>RCC Railway Platform Slab</h3><p>900 × 600 × 100 mm</p></div></div>
+        <div class="ps-card" onclick="enquireProduct('RCC Railway Platform Slab')"><div class="ps-card-img"><img src="images/products/poles/pole2.jpeg" alt="RCC Railway Platform Slab"></div><div class="ps-card-body"><span class="ps-cat">Railway</span><h3>RCC Railway Platform Slab</h3><p>900 × 600 × 100 mm</p></div></div>
       </div>
 
       <!-- Products table -->
@@ -1293,18 +1395,18 @@
     <div class="section-inner">
       <div class="section-head reveal"><span class="label">Compound &amp; Boundary Walls</span><div class="divider"></div><h2>15 Catalogue Wall Designs</h2></div>
       <div class="wall-designs reveal" style="margin-bottom:60px;">
-        <div class="wall-card" onclick="showPage('compound-wall')"><img src="images/products/walls/pdf-catalogue/wall-photo-01.png" alt="Multicolour Diamond Jali Compound Wall"><h4>RCC Multicolour Diamond Jali Wall</h4><ul><li><strong>Type:</strong> Compound Wall</li><li><strong>Plank:</strong> 2100 × 300 × 50 mm</li></ul></div>
-        <div class="wall-card" onclick="showPage('boundary-wall')"><img src="images/products/walls/pdf-catalogue/wall-photo-02.png" alt="Scalloped Floral Boundary Wall"><h4>RCC Scalloped Floral Brick Finish</h4><ul><li><strong>Type:</strong> Boundary Wall</li><li><strong>Plank:</strong> 1800 × 300 × 50 mm</li></ul></div>
+        <div class="wall-card" onclick="showPage('compound-wall')"><img src="images/products/walls/wall1.png" alt="Multicolour Diamond Jali Compound Wall"><h4>RCC Multicolour Diamond Jali Wall</h4><ul><li><strong>Type:</strong> Compound Wall</li><li><strong>Plank:</strong> 2100 × 300 × 50 mm</li></ul></div>
+        <div class="wall-card" onclick="showPage('boundary-wall')"><img src="images/products/walls/wall2.png" alt="Scalloped Floral Boundary Wall"><h4>RCC Scalloped Floral Brick Finish</h4><ul><li><strong>Type:</strong> Boundary Wall</li><li><strong>Plank:</strong> 1800 × 300 × 50 mm</li></ul></div>
         <div class="wall-card" onclick="showPage('compound-wall')"><img src="images/products/walls/pdf-catalogue/wall-photo-03.png" alt="Blue White Brick Compound Wall"><h4>RCC Blue &amp; White Brick Lattice Top</h4><ul><li><strong>Type:</strong> Compound Wall</li><li><strong>Plank:</strong> 1800 × 300 × 50 mm</li></ul></div>
         <div class="wall-card" onclick="showPage('boundary-wall')"><img src="images/products/walls/pdf-catalogue/wall-photo-07.png" alt="Terracotta Jali Boundary Wall"><h4>RCC Terracotta Diamond Jali</h4><ul><li><strong>Type:</strong> Boundary Wall</li><li><strong>Plank:</strong> 1800 × 300 × 50 mm</li></ul></div>
         <div class="wall-card" onclick="showPage('compound-wall')"><img src="images/products/walls/pdf-catalogue/wall-photo-12.png" alt="Red White Compound Wall"><h4>RCC Red &amp; White Painted Design</h4><ul><li><strong>Type:</strong> Compound Wall</li><li><strong>Plank:</strong> 2100 × 300 × 50 mm</li></ul></div>
-        <div class="wall-card" onclick="showPage('other-products')"><img src="images/products/poles/rcc-fence-pole-stack.png" alt="RCC Fence Pole Stack"><h4>RCC Fence Pole (Large)</h4><ul><li><strong>Size:</strong> 2100 × 100 × 100 mm</li></ul></div>
+        <div class="wall-card" onclick="showPage('other-products')"><img src="images/products/poles/pole3.jpeg" alt="RCC Fence Pole Stack"><h4>RCC Fence Pole (Large)</h4><ul><li><strong>Size:</strong> 2100 × 100 × 100 mm</li></ul></div>
       </div>
       <div class="section-head reveal"><span class="label">More Products</span><div class="divider"></div><h2>Railway, Chamber &amp; Utility</h2></div>
       <div class="ps-grid ps-grid-3 reveal" style="margin-bottom:60px;">
-        <div class="ps-card" onclick="enquireProduct('RCC Railway Copping')"><div class="ps-card-img"><img src="images/products/misc/rcc-railway-copping-platform.png" alt="RCC Railway Copping"><div class="ps-card-overlay"><span class="ps-view-btn">Get Quote</span></div></div><div class="ps-card-body"><span class="ps-cat">Railway</span><h3>RCC Railway Copping</h3><p>900 × 600 × 100 mm</p></div></div>
-        <div class="ps-card" onclick="enquireProduct('RCC Chamber and Cover Square')"><div class="ps-card-img"><img src="images/products/misc/rcc-chamber-cover-square.png" alt="RCC Chamber Cover"><div class="ps-card-overlay"><span class="ps-view-btn">Get Quote</span></div></div><div class="ps-card-body"><span class="ps-cat">Utility</span><h3>RCC Chamber &amp; Cover Square</h3><p>600 × 600 × 1800 mm</p></div></div>
-        <div class="ps-card" onclick="enquireProduct('RCC Coping Stone Wall Cap')"><div class="ps-card-img"><img src="images/products/misc/rcc-coping-stone-wall-cap.png" alt="RCC Coping Stone"><div class="ps-card-overlay"><span class="ps-view-btn">Get Quote</span></div></div><div class="ps-card-body"><span class="ps-cat">Finishing</span><h3>RCC Coping Stone (Wall Cap)</h3><p>Chamfered top for water runoff</p></div></div>
+        <div class="ps-card" onclick="enquireProduct('RCC Railway Copping')"><div class="ps-card-img"><img src="images/products/poles/pole4.jpeg" alt="RCC Railway Copping"><div class="ps-card-overlay"><span class="ps-view-btn">Get Quote</span></div></div><div class="ps-card-body"><span class="ps-cat">Railway</span><h3>RCC Railway Copping</h3><p>900 × 600 × 100 mm</p></div></div>
+        <div class="ps-card" onclick="enquireProduct('RCC Chamber and Cover Square')"><div class="ps-card-img"><img src="images/products/poles/pole6.jpeg" alt="RCC Chamber Cover"><div class="ps-card-overlay"><span class="ps-view-btn">Get Quote</span></div></div><div class="ps-card-body"><span class="ps-cat">Utility</span><h3>RCC Chamber &amp; Cover Square</h3><p>600 × 600 × 1800 mm</p></div></div>
+        <div class="ps-card" onclick="enquireProduct('RCC Coping Stone Wall Cap')"><div class="ps-card-img"><img src="images/products/walls/wall1.png" alt="RCC Coping Stone"><div class="ps-card-overlay"><span class="ps-view-btn">Get Quote</span></div></div><div class="ps-card-body"><span class="ps-cat">Finishing</span><h3>RCC Coping Stone (Wall Cap)</h3><p>Chamfered top for water runoff</p></div></div>
         <div class="ps-card" onclick="enquireProduct('RCC Oval Picket Boundary Fence')"><div class="ps-card-img"><img src="images/products/walls/rcc-oval-picket-boundary-fence.png" alt="RCC Oval Picket Boundary Fence"><div class="ps-card-overlay"><span class="ps-view-btn">Enquire</span></div></div><div class="ps-card-body"><span class="ps-cat">Boundary Wall</span><h3>RCC Oval Picket Boundary Fence</h3><p>1800 × 300 × 50 mm</p></div></div>
       </div>
 
