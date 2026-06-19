@@ -36,9 +36,4 @@ npm install
 npm start
 ```
 
-## Live Website
-[Add your deployed link here]
 
-## Contact
-📞 WhatsApp: [Your number]
-📧 Email: info@apgroupindustries.com.
