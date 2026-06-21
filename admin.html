@@ -4,102 +4,73 @@
     <title>Admin Panel - AP Group</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f0f0f0; }
-        .container { max-width: 1000px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; }
-        h1 { color: #333; margin-bottom: 30px; }
-        h2 { color: #666; margin-top: 30px; margin-bottom: 15px; font-size: 18px; }
+        body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; }
+        h1 { color: #333; margin-bottom: 20px; }
+        h2 { color: #666; margin-top: 25px; margin-bottom: 15px; font-size: 16px; }
         
-        .login-form, .admin-form { display: none; }
-        .login-form.show, .admin-form.show { display: block; }
-        
-        input, button { padding: 10px; margin: 5px 0; width: 100%; max-width: 300px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
-        button { background: #007bff; color: white; cursor: pointer; border: none; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        input, textarea { padding: 10px; width: 100%; max-width: 400px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; font-family: Arial; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; margin-right: 10px; }
         button:hover { background: #0056b3; }
+        button.logout { background: #dc3545; margin-top: 20px; }
         
-        .stat-group { margin: 15px 0; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .hidden { display: none; }
+        .msg { padding: 10px; margin: 10px 0; border-radius: 4px; font-size: 14px; }
+        .msg.success { background: #d4edda; color: #155724; }
+        .msg.error { background: #f8d7da; color: #721c24; }
         
-        .notification-badge {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #ff4444;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 50px;
-            font-weight: bold;
-            display: none;
-            z-index: 9999;
-        }
-        
-        .notification-badge.show { display: block; }
-        
-        .notification-toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #28a745;
-            color: white;
-            padding: 16px 20px;
-            border-radius: 8px;
-            display: none;
-            z-index: 9999;
-            max-width: 300px;
-        }
-        
-        .notification-toast.show { display: block; }
-        
-        .enquiries-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
-        .enquiries-table th, .enquiries-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        .enquiries-table th { background: #f0f0f0; }
-        .new-enquiry { background: #fffacd; font-weight: bold; }
-        
-        .logout-btn { background: #dc3545; margin-top: 20px; }
-        .status { margin: 10px 0; padding: 10px; border-radius: 4px; }
-        .success { background: #d4edda; color: #155724; }
-        .error { background: #f8d7da; color: #721c24; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+        table th, table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        table th { background: #f0f0f0; }
+        table tr.new { background: #fffacd; }
     </style>
 </head>
 <body>
-    <div class="notification-badge" id="notificationBadge">
-        <span id="badgeCount">0</span> New
-    </div>
-    <div class="notification-toast" id="notificationToast"></div>
-
     <div class="container">
-        <div class="login-form show">
+        <!-- LOGIN SECTION -->
+        <div id="loginSection">
             <h1>Admin Login</h1>
-            <input type="email" id="loginEmail" placeholder="Email">
-            <input type="password" id="loginPassword" placeholder="Password">
-            <button onclick="login()">Login</button>
-            <div id="loginStatus"></div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="email" placeholder="client@apgroup.com">
+            </div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="password" placeholder="Password">
+            </div>
+            <button onclick="doLogin()">Login</button>
+            <div id="loginMsg"></div>
         </div>
 
-        <div class="admin-form">
+        <!-- ADMIN SECTION -->
+        <div id="adminSection" class="hidden">
             <h1>Admin Panel</h1>
-            
-            <h2>Update Stats</h2>
-            <div class="stat-group">
-                <label>Total Products:</label>
-                <input type="number" id="products" placeholder="92">
-            </div>
-            <div class="stat-group">
-                <label>Total Clients:</label>
-                <input type="number" id="clients" placeholder="74">
-            </div>
-            <div class="stat-group">
-                <label>Transport Vehicles:</label>
-                <input type="number" id="vehicles" placeholder="7">
-            </div>
-            <div class="stat-group">
-                <label>Employees:</label>
-                <input type="number" id="employees" placeholder="20">
-            </div>
-            <button onclick="saveStats()">Save Stats</button>
-            <div id="saveStatus"></div>
+            <button class="logout" onclick="doLogout()">Logout</button>
 
-            <h2>Received Enquiries</h2>
-            <table class="enquiries-table">
+            <h2>Update Stats</h2>
+            <div class="form-group">
+                <label>Total Products:</label>
+                <input type="number" id="products" value="92">
+            </div>
+            <div class="form-group">
+                <label>Total Clients:</label>
+                <input type="number" id="clients" value="74">
+            </div>
+            <div class="form-group">
+                <label>Transport Vehicles:</label>
+                <input type="number" id="vehicles" value="7">
+            </div>
+            <div class="form-group">
+                <label>Employees:</label>
+                <input type="number" id="employees" value="20">
+            </div>
+            <button onclick="doSaveStats()">Save Stats</button>
+            <div id="saveMsg"></div>
+
+            <h2>Recent Enquiries</h2>
+            <table id="enquiriesTable">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -108,175 +79,154 @@
                         <th>Time</th>
                     </tr>
                 </thead>
-                <tbody id="enquiriesList">
+                <tbody id="enquiriesBody">
                     <tr><td colspan="4">Loading...</td></tr>
                 </tbody>
             </table>
-
-            <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
     </div>
 
-    <script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0"></script>
     <script>
-        // ⭐ REPLACE THESE 2 VALUES
+        // CONFIG - REPLACE THESE
         const SUPABASE_URL = "https://sqrfapumxcbtiszmmmqkh.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_807L6v_PI6bZjsYDEF_uog_z0lDYlld";
+        const SUPABASE_KEY = "sb_publishable_807L6v_PI6bZjsYDEF_uog_z0lDYlld";
 
-        let supabase;
-        let seenEnquiries = new Set();
-        let newEnquiryCount = 0;
+        let db;
+        let seenIds = new Set();
 
-        // Wait for Supabase to load
-        window.addEventListener('load', function() {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            
-            supabase.auth.onAuthStateChange((event, session) => {
-                if (session) {
-                    showAdminForm();
-                    loadStats();
-                    loadEnquiries();
-                } else {
-                    showLoginForm();
-                }
-            });
-        });
+        // Initialize Supabase
+        function init() {
+            db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            checkLoggedIn();
+        }
 
-        window.login = async function() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            if (!email || !password) {
-                document.getElementById('loginStatus').innerHTML = '<div class="status error">Email and password required</div>';
-                return;
-            }
-
-            const { error } = await supabase.auth.signInWithPassword({ email, password });
-            
-            if (error) {
-                document.getElementById('loginStatus').innerHTML = `<div class="status error">Error: ${error.message}</div>`;
-            } else {
-                showAdminForm();
+        // Check if already logged in
+        async function checkLoggedIn() {
+            const { data } = await db.auth.getSession();
+            if (data.session) {
+                showAdmin();
                 loadStats();
                 loadEnquiries();
             }
-        };
+        }
 
-        window.logout = async function() {
-            await supabase.auth.signOut();
-            showLoginForm();
-        };
+        // LOGIN
+        async function doLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
-        window.saveStats = async function() {
-            const stats = {
-                products: parseInt(document.getElementById('products').value) || 0,
-                clients: parseInt(document.getElementById('clients').value) || 0,
-                vehicles: parseInt(document.getElementById('vehicles').value) || 0,
-                employees: parseInt(document.getElementById('employees').value) || 0
+            if (!email || !password) {
+                showMsg('loginMsg', 'Enter email and password', 'error');
+                return;
+            }
+
+            const { error } = await db.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                showMsg('loginMsg', 'Login failed: ' + error.message, 'error');
+            } else {
+                showAdmin();
+                loadStats();
+                loadEnquiries();
+            }
+        }
+
+        // LOGOUT
+        async function doLogout() {
+            await db.auth.signOut();
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('adminSection').classList.add('hidden');
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // SAVE STATS
+        async function doSaveStats() {
+            const data = {
+                products: parseInt(document.getElementById('products').value),
+                clients: parseInt(document.getElementById('clients').value),
+                vehicles: parseInt(document.getElementById('vehicles').value),
+                employees: parseInt(document.getElementById('employees').value)
             };
 
-            const { error } = await supabase
+            const { error } = await db
                 .from('stats')
-                .update(stats)
+                .update(data)
                 .eq('id', 1);
 
             if (error) {
-                document.getElementById('saveStatus').innerHTML = `<div class="status error">Error</div>`;
+                showMsg('saveMsg', 'Error: ' + error.message, 'error');
             } else {
-                document.getElementById('saveStatus').innerHTML = '<div class="status success">✓ Saved!</div>';
-                setTimeout(() => {
-                    document.getElementById('saveStatus').innerHTML = '';
-                }, 3000);
+                showMsg('saveMsg', 'Stats saved!', 'success');
             }
-        };
+        }
 
+        // LOAD STATS
         async function loadStats() {
-            const { data } = await supabase
+            const { data, error } = await db
                 .from('stats')
                 .select('*')
                 .eq('id', 1)
                 .single();
 
             if (data) {
-                document.getElementById('products').value = data.products || 92;
-                document.getElementById('clients').value = data.clients || 74;
-                document.getElementById('vehicles').value = data.vehicles || 7;
-                document.getElementById('employees').value = data.employees || 20;
+                document.getElementById('products').value = data.products;
+                document.getElementById('clients').value = data.clients;
+                document.getElementById('vehicles').value = data.vehicles;
+                document.getElementById('employees').value = data.employees;
             }
         }
 
-        function loadEnquiries() {
-            refreshEnquiries();
-            setInterval(refreshEnquiries, 2000);
-        }
-
-        async function refreshEnquiries() {
-            const { data } = await supabase
+        // LOAD ENQUIRIES
+        async function loadEnquiries() {
+            const { data, error } = await db
                 .from('enquiries')
                 .select('*')
                 .order('created_at', { ascending: false })
-                .limit(100);
+                .limit(50);
 
-            const enquiriesList = document.getElementById('enquiriesList');
-            enquiriesList.innerHTML = '';
-            newEnquiryCount = 0;
+            const tbody = document.getElementById('enquiriesBody');
+            tbody.innerHTML = '';
 
             if (!data || data.length === 0) {
-                enquiriesList.innerHTML = '<tr><td colspan="4">No enquiries yet</td></tr>';
-                updateBadge();
+                tbody.innerHTML = '<tr><td colspan="4">No enquiries yet</td></tr>';
                 return;
             }
 
-            data.forEach(enquiry => {
-                const isNew = !seenEnquiries.has(enquiry.id);
-                if (isNew) {
-                    seenEnquiries.add(enquiry.id);
-                    newEnquiryCount++;
-                    showNotification(enquiry.name, enquiry.phone);
-                }
+            data.forEach(row => {
+                const isNew = !seenIds.has(row.id);
+                if (isNew) seenIds.add(row.id);
 
-                const time = new Date(enquiry.created_at).toLocaleString('en-IN');
-                const rowClass = isNew ? 'new-enquiry' : '';
-                enquiriesList.innerHTML += `
-                    <tr class="${rowClass}">
-                        <td>${enquiry.name}</td>
-                        <td>${enquiry.phone}</td>
-                        <td>${enquiry.message}</td>
-                        <td>${time}</td>
-                    </tr>
+                const time = new Date(row.created_at).toLocaleString('en-IN');
+                const tr = document.createElement('tr');
+                if (isNew) tr.classList.add('new');
+                tr.innerHTML = `
+                    <td>${row.name}</td>
+                    <td>${row.phone}</td>
+                    <td>${row.message}</td>
+                    <td>${time}</td>
                 `;
+                tbody.appendChild(tr);
             });
 
-            updateBadge();
+            // Reload every 3 seconds
+            setTimeout(loadEnquiries, 3000);
         }
 
-        function showNotification(name, phone) {
-            const toast = document.getElementById('notificationToast');
-            toast.innerHTML = `<strong>✓ New Enquiry!</strong><br>${name} (${phone})`;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 5000);
+        function showAdmin() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('adminSection').classList.remove('hidden');
         }
 
-        function updateBadge() {
-            const badge = document.getElementById('notificationBadge');
-            if (newEnquiryCount > 0) {
-                document.getElementById('badgeCount').textContent = newEnquiryCount;
-                badge.classList.add('show');
-            } else {
-                badge.classList.remove('show');
-            }
+        function showMsg(elementId, text, type) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = `<div class="msg ${type}">${text}</div>`;
+            setTimeout(() => { el.innerHTML = ''; }, 4000);
         }
 
-        function showAdminForm() {
-            document.querySelector('.login-form').classList.remove('show');
-            document.querySelector('.admin-form').classList.add('show');
-        }
-
-        function showLoginForm() {
-            document.querySelector('.admin-form').classList.remove('show');
-            document.querySelector('.login-form').classList.add('show');
-        }
+        // Start when page loads
+        window.onload = init;
     </script>
 </body>
 </html>
