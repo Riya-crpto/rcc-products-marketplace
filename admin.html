@@ -117,27 +117,30 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/+esm"></script>
+    <script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script type="module">
+    <script>
+        // ⭐ REPLACE THESE 2 VALUES
         const SUPABASE_URL = "https://sqrfapumxcbtiszmmmqkh.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_8O7L6v_Pl6bZjsYDEF_uog_z0lDY1Ld";
+        const SUPABASE_ANON_KEY = "sb_publishable_807L6v_PI6bZjsYDEF_uog_z0lDYlld";
 
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/+esm';
-
-        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+        let supabase;
         let seenEnquiries = new Set();
         let newEnquiryCount = 0;
 
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (session) {
-                showAdminForm();
-                loadStats();
-                loadEnquiries();
-            } else {
-                showLoginForm();
-            }
+        // Wait for Supabase to load
+        window.addEventListener('load', function() {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            
+            supabase.auth.onAuthStateChange((event, session) => {
+                if (session) {
+                    showAdminForm();
+                    loadStats();
+                    loadEnquiries();
+                } else {
+                    showLoginForm();
+                }
+            });
         });
 
         window.login = async function() {
