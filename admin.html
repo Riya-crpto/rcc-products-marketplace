@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel - AP Group</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f0f0f0; }
+        .container { max-width: 1000px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; }
+        h1 { color: #333; margin-bottom: 30px; }
+        h2 { color: #666; margin-top: 30px; margin-bottom: 15px; font-size: 18px; }
+        
+        .login-form, .admin-form { display: none; }
+        .login-form.show, .admin-form.show { display: block; }
+        
+        input, button { padding: 10px; margin: 5px 0; width: 100%; max-width: 300px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        button { background: #007bff; color: white; cursor: pointer; border: none; }
+        button:hover { background: #0056b3; }
+        
+        .stat-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        
+        .notification-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff4444;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            display: none;
+            z-index: 9999;
+        }
+        
+        .notification-badge.show { display: block; }
+        
+        .notification-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 16px 20px;
+            border-radius: 8px;
+            display: none;
+            z-index: 9999;
+            max-width: 300px;
+        }
+        
+        .notification-toast.show { display: block; }
+        
+        .enquiries-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
+        .enquiries-table th, .enquiries-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .enquiries-table th { background: #f0f0f0; }
+        .new-enquiry { background: #fffacd; font-weight: bold; }
+        
+        .logout-btn { background: #dc3545; margin-top: 20px; }
+        .status { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="notification-badge" id="notificationBadge">
+        <span id="badgeCount">0</span> New
+    </div>
+    <div class="notification-toast" id="notificationToast"></div>
+
+    <div class="container">
+        <div class="login-form show">
+            <h1>Admin Login</h1>
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <div id="loginStatus"></div>
+        </div>
+
+        <div class="admin-form">
+            <h1>Admin Panel</h1>
+            
+            <h2>Update Stats</h2>
+            <div class="stat-group">
+                <label>Total Products:</label>
+                <input type="number" id="products" placeholder="92">
+            </div>
+            <div class="stat-group">
+                <label>Total Clients:</label>
+                <input type="number" id="clients" placeholder="74">
+            </div>
+            <div class="stat-group">
+                <label>Transport Vehicles:</label>
+                <input type="number" id="vehicles" placeholder="7">
+            </div>
+            <div class="stat-group">
+                <label>Employees:</label>
+                <input type="number" id="employees" placeholder="20">
+            </div>
+            <button onclick="saveStats()">Save Stats</button>
+            <div id="saveStatus"></div>
+
+            <h2>Received Enquiries</h2>
+            <table class="enquiries-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Message</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="enquiriesList">
+                    <tr><td colspan="4">Loading...</td></tr>
+                </tbody>
+            </table>
+
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/+esm"></script>
+
+    <script type="module">
+        const SUPABASE_URL = "https://sqrfapumxcbtiszmmmqkh.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_8O7L6v_Pl6bZjsYDEF_uog_z0lDY1Ld";
+
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/+esm';
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let seenEnquiries = new Set();
+        let newEnquiryCount = 0;
+
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                showAdminForm();
+                loadStats();
+                loadEnquiries();
+            } else {
+                showLoginForm();
+            }
+        });
+
+        window.login = async function() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                document.getElementById('loginStatus').innerHTML = '<div class="status error">Email and password required</div>';
+                return;
+            }
+
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                document.getElementById('loginStatus').innerHTML = `<div class="status error">Error: ${error.message}</div>`;
+            } else {
+                showAdminForm();
+                loadStats();
+                loadEnquiries();
+            }
+        };
+
+        window.logout = async function() {
+            await supabase.auth.signOut();
+            showLoginForm();
+        };
+
+        window.saveStats = async function() {
+            const stats = {
+                products: parseInt(document.getElementById('products').value) || 0,
+                clients: parseInt(document.getElementById('clients').value) || 0,
+                vehicles: parseInt(document.getElementById('vehicles').value) || 0,
+                employees: parseInt(document.getElementById('employees').value) || 0
+            };
+
+            const { error } = await supabase
+                .from('stats')
+                .update(stats)
+                .eq('id', 1);
+
+            if (error) {
+                document.getElementById('saveStatus').innerHTML = `<div class="status error">Error</div>`;
+            } else {
+                document.getElementById('saveStatus').innerHTML = '<div class="status success">✓ Saved!</div>';
+                setTimeout(() => {
+                    document.getElementById('saveStatus').innerHTML = '';
+                }, 3000);
+            }
+        };
+
+        async function loadStats() {
+            const { data } = await supabase
+                .from('stats')
+                .select('*')
+                .eq('id', 1)
+                .single();
+
+            if (data) {
+                document.getElementById('products').value = data.products || 92;
+                document.getElementById('clients').value = data.clients || 74;
+                document.getElementById('vehicles').value = data.vehicles || 7;
+                document.getElementById('employees').value = data.employees || 20;
+            }
+        }
+
+        function loadEnquiries() {
+            refreshEnquiries();
+            setInterval(refreshEnquiries, 2000);
+        }
+
+        async function refreshEnquiries() {
+            const { data } = await supabase
+                .from('enquiries')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(100);
+
+            const enquiriesList = document.getElementById('enquiriesList');
+            enquiriesList.innerHTML = '';
+            newEnquiryCount = 0;
+
+            if (!data || data.length === 0) {
+                enquiriesList.innerHTML = '<tr><td colspan="4">No enquiries yet</td></tr>';
+                updateBadge();
+                return;
+            }
+
+            data.forEach(enquiry => {
+                const isNew = !seenEnquiries.has(enquiry.id);
+                if (isNew) {
+                    seenEnquiries.add(enquiry.id);
+                    newEnquiryCount++;
+                    showNotification(enquiry.name, enquiry.phone);
+                }
+
+                const time = new Date(enquiry.created_at).toLocaleString('en-IN');
+                const rowClass = isNew ? 'new-enquiry' : '';
+                enquiriesList.innerHTML += `
+                    <tr class="${rowClass}">
+                        <td>${enquiry.name}</td>
+                        <td>${enquiry.phone}</td>
+                        <td>${enquiry.message}</td>
+                        <td>${time}</td>
+                    </tr>
+                `;
+            });
+
+            updateBadge();
+        }
+
+        function showNotification(name, phone) {
+            const toast = document.getElementById('notificationToast');
+            toast.innerHTML = `<strong>✓ New Enquiry!</strong><br>${name} (${phone})`;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 5000);
+        }
+
+        function updateBadge() {
+            const badge = document.getElementById('notificationBadge');
+            if (newEnquiryCount > 0) {
+                document.getElementById('badgeCount').textContent = newEnquiryCount;
+                badge.classList.add('show');
+            } else {
+                badge.classList.remove('show');
+            }
+        }
+
+        function showAdminForm() {
+            document.querySelector('.login-form').classList.remove('show');
+            document.querySelector('.admin-form').classList.add('show');
+        }
+
+        function showLoginForm() {
+            document.querySelector('.admin-form').classList.remove('show');
+            document.querySelector('.login-form').classList.add('show');
+        }
+    </script>
+</body>
+</html>
