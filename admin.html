@@ -37,6 +37,7 @@
             position: fixed; top: 20px; right: 20px;
             background: #ff4444; color: white; padding: 12px 20px;
             border-radius: 50px; font-weight: bold; display: none; z-index: 9999;
+            cursor: pointer;
         }
         .notification-badge.show { display: block; }
 
@@ -44,8 +45,10 @@
             position: fixed; bottom: 20px; right: 20px;
             background: #28a745; color: white; padding: 16px 20px;
             border-radius: 8px; display: none; z-index: 9999; max-width: 300px;
+            cursor: pointer;
         }
         .notification-toast.show { display: block; }
+        .notification-toast .tap-hint { display:block; font-size:11px; opacity:0.85; margin-top:4px; }
 
         .enquiries-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
         .enquiries-table th, .enquiries-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
@@ -59,10 +62,10 @@
     </style>
 </head>
 <body>
-    <div class="notification-badge" id="notificationBadge">
+    <div class="notification-badge" id="notificationBadge" onclick="goToEnquiries()">
         <span id="badgeCount">0</span> New
     </div>
-    <div class="notification-toast" id="notificationToast"></div>
+    <div class="notification-toast" id="notificationToast" onclick="goToEnquiries()"></div>
 
     <div class="container">
         <div class="login-form show">
@@ -115,7 +118,7 @@
                 </div>
             </div>
 
-            <h2>Received Enquiries</h2>
+            <h2 id="enquiries-heading">Received Enquiries</h2>
             <table class="enquiries-table">
                 <thead>
                     <tr><th>Name</th><th>Phone</th><th>Message</th><th>Time</th></tr>
@@ -138,6 +141,7 @@
         const CATEGORIES = ['products', 'vehicles', 'employees']; // Clients is automatic, handled separately
 
         let accessToken = localStorage.getItem('ap_access_token') || null;
+        let refreshToken = localStorage.getItem('ap_refresh_token') || null;
         let seenEnquiries = new Set();
         let newEnquiryCount = 0;
         let refreshTimer = null;
@@ -176,7 +180,9 @@
                 }
 
                 accessToken = data.access_token;
+                refreshToken = data.refresh_token;
                 localStorage.setItem('ap_access_token', accessToken);
+                localStorage.setItem('ap_refresh_token', refreshToken);
 
                 statusEl.innerHTML = '';
                 showAdminForm();
@@ -189,22 +195,71 @@
 
         window.logout = function () {
             accessToken = null;
+            refreshToken = null;
             localStorage.removeItem('ap_access_token');
+            localStorage.removeItem('ap_refresh_token');
             if (refreshTimer) clearInterval(refreshTimer);
             showLoginForm();
         };
 
-        function authHeaders(extra = {}) {
-            return { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${accessToken}`, ...extra };
+        // Silently logs the session back in using the refresh token (no password needed)
+        async function refreshSession() {
+            if (!refreshToken) return false;
+            try {
+                const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+                    method: 'POST',
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refresh_token: refreshToken })
+                });
+                if (!res.ok) return false;
+                const data = await res.json();
+                accessToken = data.access_token;
+                refreshToken = data.refresh_token;
+                localStorage.setItem('ap_access_token', accessToken);
+                localStorage.setItem('ap_refresh_token', refreshToken);
+                return true;
+            } catch (err) {
+                return false;
+            }
+        }
+
+        function sessionTrulyExpired() {
+            accessToken = null;
+            refreshToken = null;
+            localStorage.removeItem('ap_access_token');
+            localStorage.removeItem('ap_refresh_token');
+            if (refreshTimer) clearInterval(refreshTimer);
+            showLoginForm();
+            document.getElementById('loginStatus').innerHTML =
+                '<div class="status error">Your session ended. Please log in again.</div>';
+        }
+
+        // Wraps fetch: if the login expired mid-request, refreshes it once and retries automatically
+        async function apiFetch(url, options = {}) {
+            options.headers = {
+                ...(options.headers || {}),
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${accessToken}`
+            };
+            let res = await fetch(url, options);
+
+            if (res.status === 401) {
+                const refreshed = await refreshSession();
+                if (refreshed) {
+                    options.headers['Authorization'] = `Bearer ${accessToken}`;
+                    res = await fetch(url, options);
+                } else {
+                    sessionTrulyExpired();
+                }
+            }
+            return res;
         }
 
         // ----- Products / Vehicles / Employees (manual add/remove) -----
 
         async function loadCategory(table) {
             try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*&order=created_at.desc`, {
-                    headers: authHeaders()
-                });
+                const res = await apiFetch(`${SUPABASE_URL}/rest/v1/${table}?select=*&order=created_at.desc`);
                 const data = await res.json();
                 renderCategory(table, Array.isArray(data) ? data : []);
             } catch (err) {
@@ -235,9 +290,9 @@
             if (!name) return;
 
             try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+                const res = await apiFetch(`${SUPABASE_URL}/rest/v1/${table}`, {
                     method: 'POST',
-                    headers: authHeaders({ 'Content-Type': 'application/json', 'Prefer': 'return=representation' }),
+                    headers: { 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
                     body: JSON.stringify({ name })
                 });
                 if (!res.ok) {
@@ -255,10 +310,7 @@
         window.deleteItem = async function (table, id) {
             if (!confirm('Remove this item?')) return;
             try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
-                    method: 'DELETE',
-                    headers: authHeaders()
-                });
+                const res = await apiFetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'DELETE' });
                 if (!res.ok) {
                     alert('Could not remove item.');
                     return;
@@ -278,9 +330,7 @@
 
         async function refreshEnquiries() {
             try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/enquiries?select=*&order=created_at.desc&limit=500`, {
-                    headers: authHeaders()
-                });
+                const res = await apiFetch(`${SUPABASE_URL}/rest/v1/enquiries?select=*&order=created_at.desc&limit=500`);
                 const data = await res.json();
 
                 const enquiriesList = document.getElementById('enquiriesList');
@@ -294,7 +344,6 @@
                     return;
                 }
 
-                // Clients count = number of enquiry submissions, updates automatically
                 document.getElementById('clients-count').textContent = data.length;
 
                 data.forEach(enquiry => {
@@ -329,9 +378,9 @@
 
         function showNotification(name, phone) {
             const toast = document.getElementById('notificationToast');
-            toast.innerHTML = `<strong>✓ New Enquiry!</strong><br>${escapeHtml(name)} (${escapeHtml(phone)})`;
+            toast.innerHTML = `<strong>✓ New Enquiry!</strong><br>${escapeHtml(name)} (${escapeHtml(phone)})<span class="tap-hint">Tap to view details ↓</span>`;
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 5000);
+            setTimeout(() => toast.classList.remove('show'), 6000);
         }
 
         function updateBadge() {
@@ -343,6 +392,14 @@
                 badge.classList.remove('show');
             }
         }
+
+        // Tapping the notification (badge or toast) jumps straight to the enquiry list
+        window.goToEnquiries = function () {
+            document.getElementById('enquiries-heading').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.getElementById('notificationToast').classList.remove('show');
+            document.getElementById('notificationBadge').classList.remove('show');
+            newEnquiryCount = 0;
+        };
 
         function showAdminForm() {
             document.querySelector('.login-form').classList.remove('show');
