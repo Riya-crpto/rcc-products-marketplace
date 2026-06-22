@@ -13,7 +13,7 @@
         .login-form, .admin-form { display: none; }
         .login-form.show, .admin-form.show { display: block; }
 
-        input, button { padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        input, button, select { padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
         button { background: #007bff; color: white; cursor: pointer; border: none; }
         button:hover { background: #0056b3; }
 
@@ -25,7 +25,7 @@
         .category-count { color: #007bff; font-weight: bold; font-size: 22px; margin-bottom: 10px; }
         .category-note { font-size: 12px; color: #888; margin-bottom: 10px; }
         .add-row { display: flex; gap: 6px; margin-bottom: 10px; }
-        .add-row input { flex: 1; margin: 0; }
+        .add-row input, .add-row select { flex: 1; margin: 0; }
         .add-row button { margin: 0; white-space: nowrap; }
 
         .item-list { list-style: none; max-height: 180px; overflow-y: auto; border-top: 1px solid #eee; }
@@ -59,6 +59,11 @@
         .status { margin: 10px 0; padding: 10px; border-radius: 4px; max-width: 300px; }
         .success { background: #d4edda; color: #155724; }
         .error { background: #f8d7da; color: #721c24; }
+
+        .emp-section { margin-bottom: 15px; padding-top: 10px; border-top: 1px solid #eee; }
+        .emp-section-title { font-size: 12px; color: #666; margin-bottom: 8px; font-weight: bold; }
+        .hours-log-table { width: 100%; font-size: 12px; border-collapse: collapse; }
+        .hours-log-table td { padding: 4px; border-bottom: 1px solid #eee; }
     </style>
 </head>
 <body>
@@ -110,11 +115,45 @@
                 <div class="category-box">
                     <h3>Employees</h3>
                     <div class="category-count" id="employees-count">0</div>
-                    <div class="add-row">
-                        <input type="text" id="employees-input" placeholder="Employee name">
-                        <button onclick="addItem('employees')">Add</button>
+                    
+                    <!-- ADD EMPLOYEE -->
+                    <div class="emp-section">
+                        <div class="emp-section-title">Add New Employee</div>
+                        <div class="add-row">
+                            <input type="text" id="employees-input" placeholder="Employee ID (e.g., EMP001)">
+                            <input type="text" id="employees-name" placeholder="Name">
+                        </div>
+                        <button onclick="addEmployee()" style="width: 100%;">Add Employee</button>
                     </div>
-                    <ul class="item-list" id="employees-list"></ul>
+
+                    <!-- LOG HOURS -->
+                    <div class="emp-section">
+                        <div class="emp-section-title">Log Daily Hours</div>
+                        <select id="employees-select" style="width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="">-- Select Employee --</option>
+                        </select>
+                        <input type="date" id="work-date" style="width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <div class="add-row">
+                            <input type="number" id="hours-worked" placeholder="Hours (0-24)" min="0" max="24">
+                            <button onclick="logHours()">Log</button>
+                        </div>
+                    </div>
+
+                    <!-- EMPLOYEE LIST -->
+                    <div class="emp-section">
+                        <div class="emp-section-title">Employee List (Click to see total hours)</div>
+                        <ul class="item-list" id="employees-list"></ul>
+                    </div>
+
+                    <!-- DAILY LOG -->
+                    <div class="emp-section">
+                        <div class="emp-section-title">Daily Hours Log</div>
+                        <table class="hours-log-table">
+                            <tbody id="hours-log">
+                                <tr><td colspan="4" style="text-align: center; color: #888;">No hours logged</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -138,21 +177,29 @@
         const SUPABASE_ANON_KEY = "sb_publishable_8O7L6v_Pl6bZjsYDEF_uog_z0lDY1Ld";
         // ==========================================
 
-        const CATEGORIES = ['products', 'vehicles', 'employees']; // Clients is automatic, handled separately
+        const CATEGORIES = ['products', 'vehicles']; // employees handled separately now
 
         let accessToken = localStorage.getItem('ap_access_token') || null;
         let refreshToken = localStorage.getItem('ap_refresh_token') || null;
         let seenEnquiries = new Set();
         let newEnquiryCount = 0;
         let refreshTimer = null;
+        let employeeMap = {}; // Map: employee_id -> {id, employee_id, name}
 
         window.addEventListener('DOMContentLoaded', () => {
             if (accessToken) {
                 showAdminForm();
                 CATEGORIES.forEach(loadCategory);
+                loadEmployees();
                 loadEnquiries();
+                setupTodayDate();
             }
         });
+
+        function setupTodayDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('work-date').value = today;
+        }
 
         window.login = async function () {
             const email = document.getElementById('loginEmail').value.trim();
@@ -187,7 +234,9 @@
                 statusEl.innerHTML = '';
                 showAdminForm();
                 CATEGORIES.forEach(loadCategory);
+                loadEmployees();
                 loadEnquiries();
+                setupTodayDate();
             } catch (err) {
                 statusEl.innerHTML = `<div class="status error">Network error: ${err.message}</div>`;
             }
@@ -202,7 +251,6 @@
             showLoginForm();
         };
 
-        // Silently logs the session back in using the refresh token (no password needed)
         async function refreshSession() {
             if (!refreshToken) return false;
             try {
@@ -234,7 +282,6 @@
                 '<div class="status error">Your session ended. Please log in again.</div>';
         }
 
-        // Wraps fetch: if the login expired mid-request, refreshes it once and retries automatically
         async function apiFetch(url, options = {}) {
             options.headers = {
                 ...(options.headers || {}),
@@ -255,7 +302,7 @@
             return res;
         }
 
-        // ----- Products / Vehicles / Employees (manual add/remove) -----
+        // ----- Products / Vehicles (existing code) -----
 
         async function loadCategory(table) {
             try {
@@ -321,7 +368,173 @@
             }
         };
 
-        // ----- Enquiries (also drives the automatic Clients count) -----
+        // ----- EMPLOYEES (NEW CODE) -----
+
+        async function loadEmployees() {
+            try {
+                const res = await apiFetch(`${SUPABASE_URL}/rest/v1/employees?select=*&order=created_at.desc`);
+                const data = await res.json();
+                
+                employeeMap = {};
+                (Array.isArray(data) ? data : []).forEach(emp => {
+                    employeeMap[emp.id] = emp;
+                });
+
+                renderEmployees(Array.isArray(data) ? data : []);
+                updateEmployeeSelect();
+                loadHours();
+            } catch (err) {
+                console.error('Load employees error:', err);
+            }
+        }
+
+        function renderEmployees(items) {
+            document.getElementById('employees-count').textContent = items.length;
+            const list = document.getElementById('employees-list');
+            list.innerHTML = '';
+            items.forEach(emp => {
+                const li = document.createElement('li');
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = `${emp.employee_id} - ${emp.name}`;
+                nameSpan.style.cursor = 'pointer';
+                nameSpan.title = 'Click to see total hours';
+                nameSpan.onclick = () => showEmpHours(emp.id);
+                
+                const delBtn = document.createElement('button');
+                delBtn.textContent = 'Remove';
+                delBtn.onclick = () => deleteEmployee(emp.id);
+                
+                li.appendChild(nameSpan);
+                li.appendChild(delBtn);
+                list.appendChild(li);
+            });
+        }
+
+        function updateEmployeeSelect() {
+            const select = document.getElementById('employees-select');
+            const selected = select.value;
+            select.innerHTML = '<option value="">-- Select Employee --</option>';
+            Object.values(employeeMap).forEach(emp => {
+                const opt = document.createElement('option');
+                opt.value = emp.id;
+                opt.textContent = `${emp.employee_id} - ${emp.name}`;
+                select.appendChild(opt);
+            });
+            select.value = selected;
+        }
+
+        window.addEmployee = async function () {
+            const empId = document.getElementById('employees-input').value.trim();
+            const name = document.getElementById('employees-name').value.trim();
+            
+            if (!empId || !name) {
+                alert('Enter Employee ID and Name');
+                return;
+            }
+
+            try {
+                const res = await apiFetch(`${SUPABASE_URL}/rest/v1/employees`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+                    body: JSON.stringify({ employee_id: empId, name })
+                });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    alert(`Could not add: ${err.message || 'unknown error'}`);
+                    return;
+                }
+                document.getElementById('employees-input').value = '';
+                document.getElementById('employees-name').value = '';
+                loadEmployees();
+            } catch (err) {
+                alert(`Network error: ${err.message}`);
+            }
+        };
+
+        window.deleteEmployee = async function (id) {
+            if (!confirm('Remove this employee?')) return;
+            try {
+                const res = await apiFetch(`${SUPABASE_URL}/rest/v1/employees?id=eq.${id}`, { method: 'DELETE' });
+                if (!res.ok) {
+                    alert('Could not remove employee.');
+                    return;
+                }
+                loadEmployees();
+            } catch (err) {
+                alert(`Network error: ${err.message}`);
+            }
+        };
+
+        window.logHours = async function () {
+            const empId = document.getElementById('employees-select').value;
+            const date = document.getElementById('work-date').value;
+            const hours = document.getElementById('hours-worked').value;
+
+            if (!empId || !date || !hours) {
+                alert('Select employee, date, and hours');
+                return;
+            }
+
+            try {
+                const res = await apiFetch(`${SUPABASE_URL}/rest/v1/employee_hours`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ employee_id: parseInt(empId), work_date: date, hours_worked: parseInt(hours) })
+                });
+                if (!res.ok) {
+                    alert('Could not log hours');
+                    return;
+                }
+                document.getElementById('hours-worked').value = '';
+                setupTodayDate();
+                loadHours();
+            } catch (err) {
+                alert(`Network error: ${err.message}`);
+            }
+        };
+
+        async function loadHours() {
+            try {
+                const res = await apiFetch(`${SUPABASE_URL}/rest/v1/employee_hours?select=*&order=work_date.desc&limit=100`);
+                const data = await res.json();
+
+                const tbody = document.getElementById('hours-log');
+                tbody.innerHTML = '';
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #888;">No hours logged</td></tr>';
+                    return;
+                }
+
+                data.forEach(h => {
+                    const emp = employeeMap[h.employee_id];
+                    const empName = emp ? `${emp.employee_id} - ${emp.name}` : 'Unknown';
+                    const row = `<tr><td style="padding: 4px;">${empName}</td><td style="padding: 4px;">${h.work_date}</td><td style="padding: 4px; text-align: right;"><strong>${h.hours_worked}h</strong></td></tr>`;
+                    tbody.innerHTML += row;
+                });
+            } catch (err) {
+                console.error('Load hours error:', err);
+            }
+        }
+
+        function showEmpHours(empId) {
+            const emp = employeeMap[empId];
+            if (!emp) return;
+
+            const empLogs = document.querySelectorAll('#hours-log tr');
+            let total = 0;
+            empLogs.forEach(row => {
+                const text = row.textContent;
+                if (text.includes(emp.employee_id)) {
+                    const match = text.match(/(\d+)h$/);
+                    if (match) total += parseInt(match[1]);
+                }
+            });
+
+            alert(`${emp.employee_id} - ${emp.name}\nTotal hours logged: ${total}h`);
+        }
+
+        // ----- Enquiries (existing code) -----
 
         function loadEnquiries() {
             refreshEnquiries();
@@ -393,7 +606,6 @@
             }
         }
 
-        // Tapping the notification (badge or toast) jumps straight to the enquiry list
         window.goToEnquiries = function () {
             document.getElementById('enquiries-heading').scrollIntoView({ behavior: 'smooth', block: 'start' });
             document.getElementById('notificationToast').classList.remove('show');
