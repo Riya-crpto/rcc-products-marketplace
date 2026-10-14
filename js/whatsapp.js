@@ -7,10 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
             || document.title.split('-')[0].trim();
         
         const defaultMessage = encodeURIComponent(
-            `Hello AP Group Of Industries!\n\nI am interested in your products, especially ${productName}.\n\nPlease provide me with:\n- Detailed specifications\n- Price quotation\n- Delivery timeline\n\nThank you!`
+            `Hello Sairaj Group of Industries!\n\nI am interested in your products, especially ${productName}.\n\nPlease provide me with:\n- Detailed specifications\n- Price quotation\n- Delivery timeline\n\nThank you!`
         );
         
-        whatsappBtn.href = `https://wa.me/919878300280?text=${defaultMessage}`;
+        whatsappBtn.href = `https://wa.me/919049950192?text=${defaultMessage}`;
     }
 
     // UPDATE WHATSAPP LINKS ON PRODUCT PAGES
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // FUNCTION TO GENERATE WHATSAPP MESSAGE FOR SPECIFIC PRODUCTS
 function generateWhatsAppMessage(productName, specifications = '') {
-    let message = `Hello AP Group Of Industries!\n\n`;
+    let message = `Hello Sairaj Group of Industries!\n\n`;
     message += `I am interested in ${productName}.\n\n`;
     
     if (specifications) {

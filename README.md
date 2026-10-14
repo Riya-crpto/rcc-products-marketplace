@@ -1,4 +1,4 @@
-# AP Group of Industries - E-Commerce Platform
+# Sairaj Group of Industries - E-Commerce Platform
 
 Online marketplace for premium RCC (Reinforced Cement Concrete) products and construction materials.
 
@@ -18,7 +18,7 @@ Online marketplace for premium RCC (Reinforced Cement Concrete) products and con
 - Process & quality information pages
 
 ## Company Info
-📍 **Location:** Patiala, Punjab, India
+📍 **Location:** 94/9, N11, Sudarshan Nagar, HUDCO, Chhatrapati Sambhajinagar, Maharashtra – 431003, India
 📱 **Contact:** WhatsApp integration
 🏢 **Business:** Manufacturer & Supplier of RCC Products
 
@@ -40,5 +40,5 @@ npm start
 [Add your deployed link here]
 
 ## Contact
-📞 WhatsApp: [Your number]
-📧 Email: info@apgroupindustries.com.
+📞 WhatsApp: +91 90499-50192 / +91 95451-92509
+📧 Email: info@sairajgroupindustries.com.
